@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر فخامة - الإصدار الشامل</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; scroll-behavior: smooth; }
+        .swiper-product { width: 100%; height: 280px; border-radius: 1.5rem 1.5rem 0 0; }
+        .swiper-reviews { width: 100%; padding: 20px 0; }
+        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .cart-drawer { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(100%); }
+        .cart-drawer.active { transform: translateY(0); }
+        .whatsapp-btn { animation: pulse 2s infinite; box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4); }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+        .loader { border-top-color: transparent; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .filter-btn.active { background-color: #4338ca; color: white; border-color: #4338ca; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <!-- Header -->
+    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50 p-4 border-b">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-black text-indigo-700">فخامة ✨</h1>
+            <div class="relative cursor-pointer" onclick="toggleCart()">
+                <svg class="w-8 h-8 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- تصنيفات المنتجات -->
+    <div class="flex justify-center gap-3 p-4 bg-white sticky top-[73px] z-40 border-b overflow-x-auto">
+        <button onclick="filterProducts('all')" class="filter-btn active px-6 py-2 rounded-full text-sm font-bold border whitespace-nowrap">الكل</button>
+        <button onclick="filterProducts('abaya')" class="filter-btn px-6 py-2 rounded-full text-sm font-bold border whitespace-nowrap">عبايات</button>
+        <button onclick="filterProducts('book')" class="filter-btn px-6 py-2 rounded-full text-sm font-bold border whitespace-nowrap">كتب</button>
+    </div>
+
+    <main class="container mx-auto max-w-4xl px-4 mt-6">
+        
+        <!-- شبكة المنتجات -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="products-grid">
+            <!-- سيتم توليد الـ 15 منتج برمجياً -->
+        </div>
+
+        <!-- قسم آراء العملاء -->
+        <section class="mt-20 mb-10">
+            <h3 class="text-2xl font-black text-center mb-8">آراء عملائنا ⭐</h3>
+            <div class="swiper swiper-reviews">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide p-4">
+                        <div class="bg-white p-6 rounded-[2rem] shadow-sm text-center border border-gray-100">
+                            <p class="text-gray-600 italic mb-4">"خامة العباية تجنن والتقفيل ممتاز جداً، وصلت في يومين بس!"</p>
+                            <h4 class="font-bold text-indigo-700">أماني علي</h4>
+                        </div>
+                    </div>
+                    <div class="swiper-slide p-4">
+                        <div class="bg-white p-6 rounded-[2rem] shadow-sm text-center border border-gray-100">
+                            <p class="text-gray-600 italic mb-4">"الكتب وصلت في حالة ممتازة، ومجموعة قصص الأنبياء قيمة جداً."</p>
+                            <h4 class="font-bold text-indigo-700">أحمد محمود</h4>
+                        </div>
+                    </div>
+                    <div class="swiper-slide p-4">
+                        <div class="bg-white p-6 rounded-[2rem] shadow-sm text-center border border-gray-100">
+                            <p class="text-gray-600 italic mb-4">"تعامل محترم جداً وسرعة في الرد، أنصح الجميع بالتعامل معهم."</p>
+                            <h4 class="font-bold text-indigo-700">نورة فهد</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- زر واتساب العائم (تم تعديل الرقم ليعمل مباشرة) -->
+    <a href="https://wa.me/201020809345" target="_blank" class="whatsapp-btn fixed bottom-28 right-6 bg-green-500 text-white p-4 rounded-full shadow-2xl z-50 flex items-center justify-center">
+        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </a>
+
+    <!-- سلة التسوق (Drawer) -->
+    <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/60 z-[60] hidden backdrop-blur-sm"></div>
+    <div id="cart-drawer" class="cart-drawer fixed bottom-0 left-0 right-0 bg-white z-[70] rounded-t-[3rem] max-h-[85vh] overflow-y-auto p-8 shadow-2xl">
+        <div class="w-16 h-1.5 bg-gray-200 rounded-full mx-auto mb-8"></div>
+        <h2 class="text-2xl font-black mb-6">سلة المشتريات 🛍️</h2>
+        <div id="cart-items-container" class="space-y-4 mb-8"></div>
+        <div id="checkout-box" class="hidden border-t pt-6">
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-lg font-bold">الإجمالي:</span>
+                <span id="cart-total" class="text-3xl font-black text-indigo-700">0 ج.م</span>
+            </div>
+            <form id="orderForm" class="space-y-4">
+                <input type="text" name="الاسم" required placeholder="الاسم بالكامل" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none">
+                <input type="tel" name="الهاتف" required placeholder="رقم الموبايل" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none" dir="ltr">
+                <input type="text" name="العنوان" required placeholder="العنوان (المحافظة والمدينة)" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none">
+                <input type="hidden" name="الطلبات" id="h-orders">
+                <input type="hidden" name="الاجمالي" id="h-total">
+                <button type="submit" id="submitBtn" class="w-full bg-green-600 text-white font-black text-xl py-5 rounded-2xl shadow-xl flex justify-center items-center gap-3 transition-transform active:scale-95">
+                    <span id="btnText">تأكيد طلبك 🚚</span>
+                    <div id="btnSpinner" class="loader w-6 h-6 border-4 border-white rounded-full hidden"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- شريط السلة العائم -->
+    <div id="float-bar" onclick="toggleCart()" class="fixed bottom-6 left-6 right-6 bg-indigo-700 text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center z-40 transition-all transform scale-0 cursor-pointer">
+        <div class="flex items-center gap-3">
+            <span class="bg-white text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center font-black" id="float-count">0</span>
+            <span class="font-bold">عرض السلة</span>
+        </div>
+        <span class="font-black text-lg" id="float-total">0 ج.م</span>
+    </div>
+
+    <!-- مودال النجاح -->
+    <div id="successModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-[100] p-6 backdrop-blur-md">
+        <div class="bg-white p-10 rounded-[3rem] text-center max-w-sm w-full shadow-2xl">
+            <div class="text-6xl mb-4">✅</div>
+            <h3 class="text-2xl font-bold mb-2">طلبك تم بنجاح!</h3>
+            <p class="text-gray-500 mb-6">سيتم التواصل معك هاتفياً لتأكيد الشحن خلال ساعات.</p>
+            <button onclick="location.reload()" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold">موافق</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        const products = [
+            { id: '1', name: 'عباية كريب ملكي سوداء', price: 750, img: 'https://images.unsplash.com/photo-1564510714747-69c3ad1f3e0b?w=400', category: 'abaya' },
+            { id: '2', name: 'مجموعة قصص الأنبياء', price: 150, img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400', category: 'book' },
+            { id: '3', name: 'عباية تطريز يدوي فاخر', price: 950, img: 'https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=400', category: 'abaya' },
+            { id: '4', name: 'كتاب لأنك الله', price: 80, img: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400', category: 'book' },
+            { id: '5', name: 'عباية استقبال شيفون', price: 600, img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400', category: 'abaya' },
+            { id: '6', name: 'رواية قواعد العشق الأربعون', price: 140, img: 'https://images.unsplash.com/photo-1476275466078-4007374efbbe?w=400', category: 'book' },
+            { id: '7', name: 'عباية كتان صيفية', price: 820, img: 'https://images.unsplash.com/photo-1572804013307-f9a8a47ca84b?w=400', category: 'abaya' },
+            { id: '8', name: 'كتاب نظرية الفستق', price: 110, img: 'https://images.unsplash.com/photo-1532012197367-6849412a57ce?w=400', category: 'book' },
+            { id: '9', name: 'عباية خروج رمادي أنيقة', price: 700, img: 'https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=400', category: 'abaya' },
+            { id: '10', name: 'كتاب قوة العقل الباطن', price: 130, img: 'https://images.unsplash.com/photo-1521123845960-12d93685b9d7?w=400', category: 'book' },
+            { id: '11', name: 'عباية تخرج كلاسيك', price: 450, img: 'https://images.unsplash.com/photo-1564510714747-69c3ad1f3e0b?w=400', category: 'abaya' },
+            { id: '12', name: 'كتاب فاتتني صلاة', price: 90, img: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=400', category: 'book' },
+            { id: '13', name: 'عباية خليجية دبل كلوش', price: 1250, img: 'https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=400', category: 'abaya' },
+            { id: '14', name: 'كتاب الرقص مع الحياة', price: 125, img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400', category: 'book' },
+            { id: '15', name: 'عباية مخمل شتوية', price: 1400, img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400', category: 'abaya' }
+        ];
+
+        let cart = [];
+        let localQtys = {};
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw65a6vPWMSTOKKrg4Ps7cQGMPrmIcxHHGaf_6oHjhI8ftXc3Ldr878TjKJMDouFZi4/exec';
+
+        function renderProducts(filter = 'all') {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+            
+            const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+
+            filtered.forEach(p => {
+                if (!localQtys[p.id]) localQtys[p.id] = 1;
+                grid.innerHTML += `
+                <div class="product-card bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 flex flex-col h-full transition-transform hover:scale-[1.02]">
+                    <div class="swiper swiper-product" id="swiper-${p.id}">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
+                            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=400" alt="صورة إضافية" loading="lazy"></div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-base mb-1 text-gray-800 line-clamp-1">${p.name}</h3>
+                            <p class="text-indigo-600 font-black text-lg mb-4">${p.price} ج.م</p>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between bg-gray-50 rounded-xl p-1 border">
+                                <button onclick="changeLocalQty('${p.id}', -1)" class="w-8 h-8 flex items-center justify-center bg-white rounded-lg shadow-sm font-bold text-gray-600">-</button>
+                                <span id="local-qty-${p.id}" class="w-10 text-center font-bold">${localQtys[p.id]}</span>
+                                <button onclick="changeLocalQty('${p.id}', 1)" class="w-8 h-8 flex items-center justify-center bg-white rounded-lg shadow-sm font-bold text-gray-600">+</button>
+                            </div>
+                            <button onclick="handleAddToCart('${p.id}', '${p.name}', ${p.price}, '${p.img}')" class="w-full bg-gray-900 text-white py-3 rounded-xl font-bold active:scale-95 transition-all text-sm">إضافة للسلة 🛍️</button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            
+            setTimeout(() => {
+                new Swiper(".swiper-product", { 
+                    pagination: { el: ".swiper-pagination", dynamicBullets: true },
+                    nested: true,
+                    loop: true 
+                });
+            }, 100);
+        }
+
+        function filterProducts(cat) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderProducts(cat);
+        }
+
+        function changeLocalQty(id, delta) {
+            localQtys[id] = Math.max(1, localQtys[id] + delta);
+            const el = document.getElementById(`local-qty-${id}`);
+            if(el) el.innerText = localQtys[id];
+        }
+
+        function handleAddToCart(id, name, price, img) {
+            const qtyToAdd = localQtys[id];
+            const index = cart.findIndex(item => item.id === id);
+            if (index > -1) cart[index].qty += qtyToAdd;
+            else cart.push({ id, name, price, img, qty: qtyToAdd });
+            
+            localQtys[id] = 1;
+            const el = document.getElementById(`local-qty-${id}`);
+            if(el) el.innerText = "1";
+            
+            updateCart();
+            showToast(`تم إضافة ${qtyToAdd} قطعة بنجاح!`);
+        }
+
+        function updateCart() {
+            const container = document.getElementById('cart-items-container');
+            const totalDisplay = document.getElementById('cart-total');
+            const floatBar = document.getElementById('float-bar');
+            const floatTotal = document.getElementById('float-total');
+            const floatCount = document.getElementById('float-count');
+            const cartBadge = document.getElementById('cart-count');
+            const checkoutBox = document.getElementById('checkout-box');
+
+            if (cart.length === 0) {
+                container.innerHTML = `<p class="text-center py-10 text-gray-400 font-bold">السلة فارغة حالياً</p>`;
+                floatBar.style.transform = "scale(0)";
+                checkoutBox.classList.add('hidden');
+                cartBadge.innerText = "0";
+                return;
+            }
+
+            checkoutBox.classList.remove('hidden');
+            floatBar.style.transform = "scale(1)";
+            
+            let html = '', total = 0, totalItems = 0, summary = [];
+            cart.forEach(item => {
+                total += (item.price * item.qty);
+                totalItems += item.qty;
+                summary.push(`${item.name} (${item.qty})`);
+                html += `
+                <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                    <img src="${item.img}" class="w-14 h-14 rounded-lg object-cover">
+                    <div class="flex-1 text-right">
+                        <h4 class="font-bold text-xs">${item.name}</h4>
+                        <p class="text-indigo-600 font-black text-sm">${item.price} ج.م × ${item.qty}</p>
+                    </div>
+                    <button onclick="removeItem('${item.id}')" class="text-red-500">🗑️</button>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+            cartBadge.innerText = totalItems;
+            floatCount.innerText = totalItems;
+            totalDisplay.innerText = total + ' ج.م';
+            floatTotal.innerText = total + ' ج.م';
+            document.getElementById('h-total').value = total + ' ج.م';
+            document.getElementById('h-orders').value = summary.join(' + ');
+        }
+
+        function removeItem(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCart();
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-drawer').classList.toggle('active');
+            document.getElementById('cart-overlay').classList.toggle('hidden');
+        }
+
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = "fixed top-20 left-1/2 -translate-x-1/2 bg-gray-900/90 backdrop-blur-md text-white px-6 py-3 rounded-full z-[200] text-sm font-bold shadow-xl animate-bounce";
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn'), spin = document.getElementById('btnSpinner'), txt = document.getElementById('btnText');
+            btn.disabled = true; spin.classList.remove('hidden'); txt.innerText = 'جاري الإرسال...';
+            
+            fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: new FormData(e.target) })
+            .then(() => {
+                document.getElementById('successModal').style.display = 'flex';
+                cart = []; updateCart();
+            })
+            .catch(() => alert('حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى'))
+            .finally(() => {
+                spin.classList.add('hidden'); txt.innerText = 'تأكيد طلبك 🚚'; btn.disabled = false;
+            });
+        });
+
+        window.onload = () => {
+            renderProducts();
+            new Swiper(".swiper-reviews", { 
+                pagination: { el: ".swiper-pagination" }, 
+                autoplay: { delay: 4000 }, 
+                loop: true 
+            });
+        };
+    </script>
+</body>
+</html>
