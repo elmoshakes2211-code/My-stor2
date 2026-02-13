@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر فخامة - اطلب الآن</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f9fafb; }
+        .product-card { transition: transform 0.2s; border-radius: 1rem; }
+        .loader { border-top-color: transparent; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <nav class="bg-white border-b p-4 sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-indigo-600">متجر فخامة ✨</h1>
+            <span class="text-xs text-green-600 font-bold bg-green-50 px-2 py-1 rounded">أونلاين الآن</span>
+        </div>
+    </nav>
+
+    <main class="container mx-auto max-w-lg px-4 py-8">
+        
+        <!-- المنتجات -->
+        <div class="space-y-4 mb-8">
+            <!-- عباية -->
+            <div class="product-card bg-white border p-4 flex gap-4 items-center">
+                <img src="https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=200" class="w-20 h-20 object-cover rounded-lg">
+                <div class="flex-1">
+                    <h3 class="font-bold">عباية كلاسيكية سوداء</h3>
+                    <p class="text-indigo-600 font-bold">450 ج.م</p>
+                    <div class="flex items-center gap-3 mt-2">
+                        <button onclick="changeQty('p1', -1)" class="w-8 h-8 border rounded-full text-center">-</button>
+                        <span id="qty-p1" class="font-bold">0</span>
+                        <button onclick="changeQty('p1', 1)" class="w-8 h-8 bg-indigo-600 text-white rounded-full">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- كتب -->
+            <div class="product-card bg-white border p-4 flex gap-4 items-center">
+                <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200" class="w-20 h-20 object-cover rounded-lg">
+                <div class="flex-1">
+                    <h3 class="font-bold">قصص الأطفال</h3>
+                    <p class="text-indigo-600 font-bold">120 ج.م</p>
+                    <div class="flex items-center gap-3 mt-2">
+                        <button onclick="changeQty('p2', -1)" class="w-8 h-8 border rounded-full text-center">-</button>
+                        <span id="qty-p2" class="font-bold">0</span>
+                        <button onclick="changeQty('p2', 1)" class="w-8 h-8 bg-indigo-600 text-white rounded-full">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- الفورم -->
+        <div class="bg-white p-6 rounded-2xl shadow-lg border">
+            <h2 class="text-lg font-bold mb-4 text-center">بيانات الشحن</h2>
+            <form id="orderForm" class="space-y-3">
+                <input type="text" name="الاسم" required placeholder="الاسم" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-indigo-500">
+                <input type="tel" name="الهاتف" required placeholder="الموبايل" class="w-full p-3 bg-gray-50 border rounded-xl outline-none text-right" dir="ltr">
+                <input type="text" name="العنوان" required placeholder="العنوان" class="w-full p-3 bg-gray-50 border rounded-xl outline-none">
+                
+                <input type="hidden" name="الطلبات" id="hidden-orders">
+                <input type="hidden" name="الاجمالي" id="hidden-total">
+
+                <div class="pt-4 text-center">
+                    <p class="text-sm text-gray-500">إجمالي الطلب:</p>
+                    <p id="display-total" class="text-2xl font-bold text-indigo-700 mb-4">0 ج.م</p>
+                    <button type="submit" id="submitBtn" class="w-full bg-green-600 text-white font-bold py-4 rounded-xl flex justify-center items-center gap-2">
+                        <span id="btnText">تأكيد الأوردر</span>
+                        <div id="btnSpinner" class="loader w-5 h-5 border-2 border-white rounded-full hidden"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <div id="successModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100] p-4">
+        <div class="bg-white p-6 rounded-2xl text-center max-w-xs w-full shadow-xl">
+            <h3 class="text-xl font-bold text-green-600 mb-2">تم استلام طلبك! ✅</h3>
+            <p class="text-gray-600 text-sm mb-4">شكراً لك، سنتواصل معك قريباً.</p>
+            <button onclick="location.reload()" class="w-full bg-gray-800 text-white py-2 rounded-lg font-bold">إغلاق</button>
+        </div>
+    </div>
+
+    <script>
+        const products = { p1: {n: "عباية", p: 450}, p2: {n: "كتب", p: 120} };
+        const cart = { p1: 0, p2: 0 };
+
+        function changeQty(id, delta) {
+            cart[id] = Math.max(0, cart[id] + delta);
+            document.getElementById(`qty-${id}`).innerText = cart[id];
+            let total = (cart.p1 * products.p1.p) + (cart.p2 * products.p2.p);
+            let summary = [];
+            if(cart.p1 > 0) summary.push(`${products.p1.n} (${cart.p1})`);
+            if(cart.p2 > 0) summary.push(`${products.p2.n} (${cart.p2})`);
+            document.getElementById('display-total').innerText = total + ' ج.م';
+            document.getElementById('hidden-total').value = total + ' ج.م';
+            document.getElementById('hidden-orders').value = summary.join(' + ');
+        }
+
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw65a6vPWMSTOKKrg4Ps7cQGMPrmIcxHHGaf_6oHjhI8ftXc3Ldr878TjKJMDouFZi4/exec';
+        
+        document.getElementById('orderForm').addEventListener('submit', e => {
+            e.preventDefault();
+            if (parseInt(document.getElementById('hidden-total').value) === 0) return alert('برجاء اختيار منتج');
+            
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            document.getElementById('btnText').innerText = 'جاري الحفظ...';
+            document.getElementById('btnSpinner').classList.remove('hidden');
+
+            fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: new FormData(e.target) })
+            .then(() => document.getElementById('successModal').style.display = 'flex')
+            .catch(() => alert('حدث خطأ'))
+            .finally(() => {
+                document.getElementById('btnSpinner').classList.add('hidden');
+                document.getElementById('btnText').innerText = 'تأكيد الأوردر';
+            });
+        });
+    </script>
+</body>
+</html>
